@@ -1,0 +1,110 @@
+body {
+    background-color: #333;
+    padding: 0;
+    margin: 0;
+}
+.bg-div-class {
+    background-image: url("../images/river.jpg");
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+.myHover {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 90;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: none;
+}
+.search-box-class {
+    position: absolute;
+    top: 200px;
+    left: 320px;
+    z-index: 100;
+}
+.logo-class {
+    background-image: url("../images/logo.png");
+    width: 107px;/*这里高度值和宽度值我是按照图像原本的大小设置的*/
+    height: 53px;
+    float: left;
+    margin-right: 20px;
+    margin-top: -7px;
+}
+form {
+    background-color: #fff;
+    float: left;
+    padding: 5px 5px;
+}
+.search-input-text-class,
+.search-input-button-class {
+    border: 0;
+    float: left;
+    outline: none;
+}
+.search-input-text-class {
+    width: 420px;
+    height: 25px;
+    line-height: 25px;
+    font-size: 20px;
+}
+.search-input-button-class {/*input是行内块元素~故可以直接设置宽高*/
+    background-image: url("../images/search-button.png");
+    width: 29px;
+    height: 29px;
+}
+.suggest-class {
+    background-color: #fff;
+    width: 388px;
+    border: 1px solid #999;
+}
+.suggest-class ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.suggest-class li {
+    font-size: 14px;
+    padding: 3px 3px;
+    line-height: 25px;
+    cursor: pointer;
+}
+.suggest-class li:hover {
+    text-decoration: underline;
+    background-color: #eee;
+}
+.arrow-class {
+    position: fixed;
+    bottom: 32px;
+    right:0px;
+
+
+    height: 45px;
+    z-index: 200;
+}
+.left,
+.right{
+    float: left;
+    width: 40px;
+    height: 40px;
+    border: 2px solid #fff;
+    cursor: pointer;
+    margin-right: 30px;
+    -webkit-border-radius: 50%;
+       -moz-border-radius: 50%;
+            border-radius: 50%;
+}
+.left {
+    background: url("../images/nav-icons.png") no-repeat -63px -3px;
+}
+
+.right {
+    background: url("../images/nav-icons.png") no-repeat -123px -3px;
+}
+
+.left:hover {
+    background: url("../images/nav-icons2.png") no-repeat -63px -3px;
+}
+.right:hover {
+    background: url("../images/nav-icons2.png") no-repeat -123px -3px;
+}

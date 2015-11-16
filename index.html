@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0">
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge" >
+    <link rel="stylesheet" href="css/main.css">
+    <script src="http://apps.bdimg.com/libs/jquery/1.11.1/jquery.min.js"></script>
+    <title>bing搜获框</title>
+</head>
+<body>
+<div class="bg-div-class">
+    <div class="myHover"></div>
+    <div class="search-box-class">
+        <div class="logo-class"></div>
+        <form id="search-form-id" class="search-form-class" action="http://cn.bing.com/search" target="_blank">
+            <input type="text" id="search-input-id" class="search-input-text-class">
+            <input type="submit" class="search-input-button-class" value="">
+        </form>
+    </div>
+</div>
+<div id="search-suggest-id" class="suggest-class" style="display: none;">
+    <ul id="search-result-id"></ul>
+</div>
+<div class="arrow-class">
+    <div class="left" id="left-arrow-id"></div>
+    <div class="right" id="right-arrow-id"></div>
+</div>
+</body>
+<script>
+    $("#search-input-id").bind("click", function() {
+        $(".myHover").fadeIn("middle");
+    });
+    $("#search-input-id").bind("blur", function() {
+        $(".myHover").fadeOut("middle");
+    })
+    $("#search-input-id").bind("keyup", function() {
+        var keyWord = $("#search-input-id").val();
+        $.get("http://api.bing.com/qsonhs.aspx?q=" + keyWord,function(jsonData){
+            var data = jsonData.AS.Results[0].Suggests;
+            var html = "";
+            for(var i = 0; i < data.length; i++){
+                html += "<li>" + data[i].Txt + "</li>"
+            }
+            $("#search-result-id").html(html);
+            $("#search-suggest-id").show().css({
+                "top": $("#search-form-id").offset().top + $("#search-form-id").height() + 11,
+                "left": $("#search-form-id").offset().left,
+                "position":"absolute",
+                "z-index":"101"
+            });
+        },"json");
+    });
+
+    $(document).bind("click",function() {
+        $("#search-suggest-id").hide();
+    });
+
+    $(document).delegate("li", "click", function() {
+        var keyWord = $(this).text();
+        location.href = "http://cn.bing.com/search?q=" + keyWord;
+    });
+
+    var picArray = [];
+    picArray.push('url(http://api.bing.com/images/river.jpg)');
+    picArray.push('url(http://api.bing.com/images/mountain.jpg)');
+    picArray.push('url(http://api.bing.com/images/rock.jpg)');
+    picArray.push('url(http://api.bing.com/images/star.jpg)');
+
+    console.log(picArray[0]);
+    /*picArray['url("../images/river.jpg")'] = {index: 0, path: 'url("../images/river.jpg")'};
+    picArray['url("../images/mountain.jpg")'] = {index: 1, path: 'url("../images/mountain.jpg")'};
+    picArray['url("../images/rock.jpg")'] = {index: 2, path: 'url("../images/rock.jpg")'};
+    picArray['url("../images/star.jpg")'] = {index: 3, path: 'url("../images/star.jpg")'};
+*/
+    $("#left-arrow-id").bind("click", function() {
+
+        var bgElement = $(".bg-div-class");
+        var url = bgElement.css("background-image");
+        console.log(url);
+        console.log(picArray);
+        for(var i = 0; i < picArray.length; i++) {
+            if(picArray[i] == url) {
+                if(i <= 0) {
+                    return;
+                }else {
+                    bgElement.css({
+                        "background-image":picArray[i - 1]
+                    });
+                    return;
+                }
+            }
+        }
+    });
+    $("#right-arrow-id").bind("click", function() {
+        var bgElement = $(".bg-div-class");
+        var url = bgElement.css("background-image");
+        console.log(url);
+        for(var i = 0; i < picArray.length; i++) {
+            if(picArray[i] == url) {
+                if(i >= picArray.length) {
+                    return;
+                }else {
+                    bgElement.css({
+                        "background-image":picArray[i + 1]
+                    });
+                    return;
+                }
+            }
+        }
+    });
+</script>
+</html>

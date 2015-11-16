@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0">
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge" >
+    <link rel="stylesheet" href="css/main.css">
+    <title>原生js实现bing搜获框</title>
+</head>
+<body>
+<div class="bg-div-class">
+    <div class="myHover" id="my-hover-id"></div>
+    <div class="search-box-class">
+        <div class="logo-class"></div>
+        <form id="search-form-id" class="search-form-class" action="http://cn.bing.com/search" target="_blank">
+            <input type="text" id="search-input-id" class="search-input-text-class"/>
+            <input type="submit" class="search-input-button-class" value=""/>
+        </form>
+    </div>
+</div>
+<div id="search-suggest-id" class="suggest-class" style="display: none;">
+    <ul id="search-result-id">
+        <li>haha</li>
+        <li>hehe</li>
+    </ul>
+</div>
+</body>
+
+<script>
+    function $(id) {
+        return document.getElementById(id);
+    }
+
+    function addEvent(id, event, fn) {
+        var elemt = $(id) || document;
+        if(elemt.addEventListener) {
+            elemt.addEventListener(event, fn, false);
+        }else {
+            elemt.attachEvent("on" + event, fn);
+        }
+    }
+
+    /**
+     * 获取指定元素距离屏幕左边的距离
+     * @param element
+     * @returns {Number|number}
+     */
+    function getElementLeft(element) {
+        var currentLeft = element.offsetLeft;
+        var parent = element.offsetParent;
+        while(parent) {
+            currentLeft += parent.offsetLeft;
+            parent = parent.offsetParent;
+        }
+        return currentLeft;
+    }
+
+    /**
+     * 获取指定元素到屏幕顶端的距离
+     * @param element
+     * @returns {Number|number}
+     */
+    function getElementTop(element) {
+        var currentTop = element.offsetTop;
+        var parent = element.offsetParent;
+        while(parent) {
+            currentTop += parent.offsetTop;
+            parent = parent.offsetParent;
+        }
+        return currentTop;
+    }
+
+    /**
+     * 使用ajax从服务器获取与用户输入关键字相关的提示内容
+     * @param url
+     * @param callBack
+     */
+    function getAjax(url, callBack) {
+        var xhr = null;
+        if(window.XMLHttpRequest){
+            xhr = new XMLHttpRequest();
+        }else {
+            xhr = ActiveXObject("Msxml2.XMLHTTP");
+        }
+
+        xhr.open("get", url, true);
+        xhr.send(null);
+        xhr.onreadystatechange = function() {
+            if(xhr.readyState == 4 && xhr.status == 200) {
+                callBack(JSON.parse(xhr.responseText));
+            }
+        }
+    }
+
+    function delegateEvent(target, event, fn) {
+        addEvent(document, event, function(e) {
+            if(e.target.nodeName == target.toUpperCase()) {
+                fn.call(e.target);
+            }
+        });
+    }
+
+    addEvent("search-input-id", "keyup", function() {
+        var keyWord = $("search-input-id").value;
+        getAjax("http://api.bing.com/qsonhs.aspx?q=" + keyWord, function(jsonData) {
+            var data = jsonData.AS.Results[0].Suggests;
+            var html = "";
+            for(var i = 0; i < data.length; i++) {
+                html += "<li>" + data[i].Txt + "</li>";
+            }
+            $("search-result-id").innerHTML = html;
+            var searchSuggestElement = $("search-suggest-id");
+            searchSuggestElement.style.top = getElementTop($("search-form-id")) + 38 + "px";
+            searchSuggestElement.style.left = getElementLeft($("search-form-id")) + "px";
+            searchSuggestElement.style.position = "absolute";
+            searchSuggestElement.style.display = "block";
+            searchSuggestElement.style.zIndex = "100";
+        });
+    });
+
+    addEvent("search-input-id", "click", function() {
+       $("my-hover-id").style.display = "block";
+    });
+    addEvent("search-input-id", "blur", function() {
+        $("my-hover-id").style.display = "none";
+        $("search-input-id").style.display = "none";
+    });
+
+    delegateEvent("li", "click", function() {
+        var keyWord = this.innerHTML;
+        location.href = "http://cn.bing.com/search?q=" + keyWord;
+    });
+</script>
+</html>
